@@ -35,12 +35,13 @@ class task:
         self.priority=Priority(self.priority.value+1)
         
     def __str__(self) -> str:
-        print(f" ")
+        
+        return f"{self.title} is a {self.type.name} task about {self.description}. Its gonna take {self.duration} min and has {self.priority.name} priority"
         
         
 if __name__ == "__main__":
     
-    t1=task(60,Priority.very_high,"Finish Assignment 4 for COMP 251","Assignment 4",TaskType.school)
+    t1=task(60,Priority.very_high,TaskType.school)
     
     t1.updateDuration(30)
     print(t1.priority.value)
