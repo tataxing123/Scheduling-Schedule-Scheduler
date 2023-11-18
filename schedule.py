@@ -12,9 +12,9 @@ class SleepingHabits(Enum):
     both = 3
 
 product_func = lambda x: x.priority.value *  x.time_remaining_to_deadline()
-sum_func_opt_deadline = lambda x: (x.priority.value  + 0.5 * x.time_remaining_to_deadline())
-sum_func_opt_priotity = lambda x: -(0.5 * x.priority.value + x.time_remaining_to_deadline())
-sum_func_non_opt =  lambda x: -(x.priority.value + x.time_remaining_to_deadline())
+sum_func_opt_deadline = lambda x: -(2*x.time_remaining_to_deadline()/x.priority.value)
+sum_func_opt_priotity = lambda x: -(0.5*x.time_remaining_to_deadline()/x.priority.value)
+sum_func_non_opt      = lambda x: -(x.time_remaining_to_deadline()/x.priority.value)
 
 
 class Schedule:
@@ -70,12 +70,28 @@ class Schedule:
         
 if __name__ == "__main__":
 
+
     t1=task("t1",60, datetime(2023,11,18, 22,00),Priority.low,TaskType.school)
     t2=task("t2",60, datetime(2023,11,18, 22,00),Priority.very_high,TaskType.school)
     t3=task("t3",60, datetime(2023,11,19, 2, 00),Priority.very_high,TaskType.school)
     t4=task("t4",120,datetime(2023,11,20, 19,30),Priority.low, TaskType.school)
+    
+    t5=task("t1",60, datetime(2023,11,18, 22,00),Priority.low,TaskType.school)
+    t6=task("t2",60, datetime(2023,11,18, 23,59),Priority.very_high,TaskType.school)
+    t7=task("t3",60, datetime(2023,11,19, 2, 00),Priority.low,TaskType.school)
+    t8=task("t4",120,datetime(2023,11,20, 19,30),Priority.low, TaskType.school)
+    
+    print(t1.time_remaining_to_deadline())
+    print(t1.time_remaining_to_deadline()/t1.priority.value)
+    print(t2.time_remaining_to_deadline())
+    print(t2.time_remaining_to_deadline()/t2.priority.value)
+    print(t3.time_remaining_to_deadline())
+    print(t3.time_remaining_to_deadline()/t3.priority.value)
+    print(t4.time_remaining_to_deadline())
+    print(t4.time_remaining_to_deadline()/t4.priority.value)
+    
     # title,duration,deadline,priority,type,description
-
+    test1=[t1,t2,t3,t4]
 
     fs = [sum_func_non_opt, sum_func_opt_deadline, sum_func_opt_priotity]
     for f in fs: 

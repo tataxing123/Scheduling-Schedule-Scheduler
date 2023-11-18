@@ -3,10 +3,10 @@ from datetime import datetime
 
 class Priority(Enum):
     
-    very_high = 1
-    high = 2
-    neutral = 3
-    low = 4
+    very_high = 4
+    high = 3
+    neutral = 2
+    low = 1
     
 class TaskType(Enum):
     
