@@ -1,5 +1,5 @@
 # Scheduling-Schedule-Scheduler
 
 ## UML Diagram
-![Alt text](image.png)
+![Alt text](images/UML_Diagram.png)
 

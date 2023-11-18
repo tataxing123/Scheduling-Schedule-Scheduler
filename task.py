@@ -1,4 +1,5 @@
 from enum import Enum
+from datetime import datetime
 
 class Priority(Enum):
     
@@ -18,13 +19,14 @@ class TaskType(Enum):
  
 class task:
     
-    def __init__(self,duration,priority=Priority.low,description="",title="No Title",type=TaskType.other):
+    def __init__(self,duration,priority=Priority.low,description="",title="No Title",type=TaskType.other,deadline=datetime(2023,12,30,12,30)):
         
         self.duration=duration
         self.priority=priority
         self.description=description
         self.title=title
         self.type=type
+        self.deadline=deadline
         
     def updateDuration(self,remainingDuration):
         
@@ -36,12 +38,12 @@ class task:
         
     def __str__(self) -> str:
         
-        return f"{self.title} is a {self.type.name} task about {self.description}. Its gonna take {self.duration} min and has {self.priority.name} priority"
+        return f'''{self.title} is a {self.type.name} task about {self.description}. Its gonna take {self.duration} min and has {self.priority.name} priority. It's due on {self.deadline}'''
         
         
 if __name__ == "__main__":
     
-    t1=task(60,Priority.very_high,TaskType.school)
+    t1=task(60,Priority.very_high,TaskType.school,datetime(2023,12,20,14,30))
     
     t1.updateDuration(30)
     print(t1.priority.value)
