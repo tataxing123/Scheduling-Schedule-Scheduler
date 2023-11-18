@@ -6,25 +6,26 @@ from datetime import datetime
 from enum import Enum
 
 class SleepingHabits(Enum):
-    
+   
     morning = 1
     night = 2
     both = 3
 
 product_func = lambda x: x.priority.value *  x.time_remaing_to_deadline()
-sum_func = lambda x, rate: x.priority.value + rate * x.time_remaing_to_deadline()
-#TODO add rate function 
+sum_func_opt_deadline = lambda x: x.priority.value       + 0.5 * x.time_remaing_to_deadline()
+sum_func_opt_priotity = lambda x: 0.5 * x.priority.value + x.time_remaing_to_deadline()
+sum_func_non_opt =  lambda x: 0.5 * x.priority.value + x.time_remaing_to_deadline()
 
 class Schedule:
-    
-    def __init__(self,myTasks=[],myEvents=[],habits=SleepingHabits.both, funct_to_use=product_func, rate=1):
+
+    def __init__(self,myTasks=[],myEvents=[],wakeup_time=datetime.time(8, 0, 0) , sleep_time=datetime.time(0, 0, 0), prefered_function=product_func):
         
         self.myTasks=myTasks
         self.myEvents=myEvents
-        self.habits=habits
-        self.funct_to_use = funct_to_use
-        self.rate =rate
-    
+        self.prefered_function = prefered_function
+        self.wakeup_time = wakeup_time
+        self.sleep_time = sleep_time
+
     def addTask(self,newTask):
         
         self.myTasks.append(newTask)
@@ -42,6 +43,19 @@ class Schedule:
     def updateTasks(self):
         return
     
+    def update_preference(self, new_preference): 
+
+        self.prefered_function = new_preference
+    
+    def update_sleep_time(self, sleep_time): 
+
+        self.sleep_time = sleep_time
+    
+    def update_wakeup_time(self, wakeup_time): 
+
+        self.wakeup_time = wakeup_time
+    
+
     def __str__(self):
         for something in self.myTasks:
             print(something)
