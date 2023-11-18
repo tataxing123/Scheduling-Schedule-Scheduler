@@ -49,9 +49,6 @@ class Schedule:
         
         sorted_tasks = sorted(self.myTasks, key= self.func_to_use) 
         self.myTasks = sorted_tasks
-        
-    def updateTasks(self):
-        return
     
     def update_preference(self, new_preference): 
 
