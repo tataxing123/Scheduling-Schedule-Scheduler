@@ -1,9 +1,9 @@
-from task import task
-from event import event
-from task import Priority
-from task import TaskType
-from datetime import datetime, time
+from event import *
+from task import *
+from datetime import datetime, time,timedelta
 from enum import Enum
+
+ID=0
 
 class SleepingHabits(Enum):
    
@@ -38,13 +38,17 @@ class Schedule:
         else : 
             self.sleep_time = sleep_time
 
-    def addTask(self,newTask):
+    def addTask(self,title,duration,deadline,priority,task_type,description=""):
+        new_task = task(title,duration,deadline,priority,task_type,description)
+        new_task.ID=ID
+        ID+=1
+        self.myTasks.append(new_task)
         
-        self.myTasks.append(newTask)
-        
-    def addEvent(self,newEvent):
-        
-        self.myEvent.append(newEvent)
+    def addEvent(self,start,end,description="",title="No Title",type=EventType.other,repetition=EventRepetition.once):
+        new_event = event(start,end,description,title,type,repetition)
+        new_event.ID=ID
+        ID+=1
+        self.myEvents.append(new_event)
         
     def sortTask(self):
         
@@ -62,41 +66,89 @@ class Schedule:
     def update_wakeup_time(self, wakeup_time): 
 
         self.wakeup_time = wakeup_time
-    
+        
+    def greedy_sort(self):
+        
+        # Sort tasks by descending priority and then by ascending deadline
+        sorted_tasks = self.myTasks
+        schedule = []
+        current_time = datetime.now()
+
+        for task in self.myTasks:
+            
+            # Check if the task can be scheduled before its deadline
+            if current_time + timedelta(hours=task.duration) <= task.deadline:
+                
+                # Check for overlapping events and sleep time
+                while any(event.start_time <= current_time < event.end_time for event in self.myEvents) or (current_time + timedelta(hours=task.duration)) > self.sleep_time:
+                    
+                    # Move the current time to the end of the conflicting event or sleep time
+                    current_time = min(event.end_time for event in self.myEvents if event.start_time <= current_time < event.end_time) if any(event.start_time <= current_time < event.end_time for event in self.myEvents) else self.sleep_time
+
+                # Check if the task needs to be split
+                if task.duration > (self.sleep_time - current_time):
+                    # Calculate the remaining duration for the second part of the task
+                    remaining_duration = task.duration - (self.sleep_time - current_time)
+
+                    # Schedule the first part of the task
+                    schedule.append((current_time, self.sleep_time))
+                    current_time = self.sleep_time
+
+                    # Create a new task for the second part
+                    new_task = task(title=task.title,duration=remaining_duration, deadline=task.deadline)
+                    new_task.priority = task.priority
+                    sorted_tasks.append(new_task)
+
+                    # Sort the tasks again after adding the new task
+                    sorted_tasks = sorted(sorted_tasks, key=lambda x: (x.priority, x.deadline), reverse=True)
+                else:
+                    # Schedule the entire task
+                    schedule.append((current_time, current_time + task.duration))
+                    current_time += task.duration
+                    
+        return schedule
+
 
     def __str__(self):
-        for something in self.myTasks:
-            print(something)
+        for this_task in self.myTasks:
+            print(this_task)
         
 if __name__ == "__main__":
 
 
-    t1=task("t1",60, datetime(2023,11,18, 22,00),Priority.low,TaskType.school)
-    t2=task("t2",60, datetime(2023,11,18, 22,00),Priority.very_high,TaskType.school)
-    t3=task("t3",60, datetime(2023,11,19, 2, 00),Priority.very_high,TaskType.school)
-    t4=task("t4",120,datetime(2023,11,20, 19,30),Priority.low, TaskType.school)
+    greedy_sort=task("Complete greedy sort",60, datetime(2023,11,19, 12,00),Priority.very_high,TaskType.school)
+    convert_to_js=task("Covert Code to JS",60, datetime(2023,11,19, 12,00),Priority.high,TaskType.school)
+    send_email=task("Send email",15, datetime(2023,11,18,22,00),Priority.low,TaskType.school,"send an email to the guidance counselor about course selection")
+    buy_bd_gift=task("Buy B-Day Gift",60, datetime(2023,11,19,15,00),Priority.neutral,TaskType.personal)
     
-    t5=task("t1",60, datetime(2023,11,18, 22,00),Priority.low,TaskType.school)
-    t6=task("t2",60, datetime(2023,11,18, 23,59),Priority.very_high,TaskType.school)
-    t7=task("t3",60, datetime(2023,11,19, 2, 00),Priority.low,TaskType.school)
-    t8=task("t4",120,datetime(2023,11,20, 19,30),Priority.low, TaskType.school)
+    task1=[greedy_sort,convert_to_js,send_email,buy_bd_gift]
     
-    print(t1.time_remaining_to_deadline())
-    print(t1.time_remaining_to_deadline()/t1.priority.value)
-    print(t2.time_remaining_to_deadline())
-    print(t2.time_remaining_to_deadline()/t2.priority.value)
-    print(t3.time_remaining_to_deadline())
-    print(t3.time_remaining_to_deadline()/t3.priority.value)
-    print(t4.time_remaining_to_deadline())
-    print(t4.time_remaining_to_deadline()/t4.priority.value)
-    
-    # title,duration,deadline,priority,type,description
-    test1=[t1,t2,t3,t4]
+    supper=event(datetime(2023,11,18,19,00),datetime(2023,11,18,20,00),"FOOD!","Supper",EventType.personal,EventRepetition.everyday)
+    workout=event(datetime(2023,11,18,22,00),datetime(2023,11,18,22,30),"GRIND :)!","Workout",EventType.personal,EventRepetition.weekly)
+    breakfast=event(datetime(2023,11,19,9,30),datetime(2023,11,17,10,00),"MORE FOOD!","Breakfast",EventType.personal,EventRepetition.everyday)
+    event1=[supper,workout,breakfast]
 
+    my_schedule=Schedule(task1,event1,time(7, 0, 0),time(23, 0, 0), sum_func_non_opt)
+    
     fs = [sum_func_non_opt, sum_func_opt_deadline, sum_func_opt_priotity]
     for f in fs: 
         print('----------')
-        mySchedule=Schedule([t1,t2,t3,t4],[],prefered_function=f)
-        mySchedule.sortTask()
-        for something in mySchedule.myTasks:
-                print(something)
+        my_schedule.sortTask()
+        designed_schedule=my_schedule.greedy_sort()
+        for my_life in designed_schedule:
+            print(my_life)
+                
+
+    
+    
+    
+    
+    # print(t1.time_remaining_to_deadline())
+    # print(t1.time_remaining_to_deadline()/t1.priority.value)
+    # print(t2.time_remaining_to_deadline())
+    # print(t2.time_remaining_to_deadline()/t2.priority.value)
+    # print(t3.time_remaining_to_deadline())
+    # print(t3.time_remaining_to_deadline()/t3.priority.value)
+    # print(t4.time_remaining_to_deadline())
+    # print(t4.time_remaining_to_deadline()/t4.priority.value)
+    

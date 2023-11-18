@@ -15,7 +15,8 @@ class EventRepetition(Enum):
     weekly = 1
     weekday = 2
     weekend = 3
-    once = 4
+    everyday = 4
+    once = 5
     
     
 class event:
@@ -28,6 +29,7 @@ class event:
         self.title=title
         self.type=type
         self.repetition=repetition
+        self.ID=0
         
     def updateStartEnd(self, start_year, start_month, start_day, start_hour, start_minute, end_year, end_month, end_day, end_hour, end_minute):
         self.start = datetime(start_year, start_month, start_day, start_hour, start_minute)

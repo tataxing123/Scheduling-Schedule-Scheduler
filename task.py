@@ -1,5 +1,6 @@
 from enum import Enum
 from datetime import datetime
+import schedule
 
 class Priority(Enum):
     
@@ -29,6 +30,9 @@ class task:
         self.deadline=deadline
         self.completed=False 
         self.scheduled=False
+        self.start_time=None
+        self.end_time=None
+        self.ID=0
         
     def updateDuration(self,remainingDuration):
         
