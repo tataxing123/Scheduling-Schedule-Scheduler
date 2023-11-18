@@ -19,12 +19,22 @@ sum_func_non_opt =  lambda x: 0.5 * x.priority.value + x.time_remaing_to_deadlin
 class Schedule:
 
     def __init__(self,myTasks=[],myEvents=[],wakeup_time=datetime.time(8, 0, 0) , sleep_time=datetime.time(0, 0, 0), prefered_function=product_func):
-        
+
         self.myTasks=myTasks
         self.myEvents=myEvents
         self.prefered_function = prefered_function
         self.wakeup_time = wakeup_time
         self.sleep_time = sleep_time
+        
+        if wakeup_time is None:  
+            self.wakeup_time = datetime.time(8, 0, 0)
+        else : 
+            self.wakeup_time = wakeup_time
+
+        if sleep_time is None:    
+            sleep_time = datetime.time(0, 0, 0)
+        else : 
+            self.sleep_time = sleep_time
 
     def addTask(self,newTask):
         
@@ -37,8 +47,7 @@ class Schedule:
     def sortTask(self):
         
         sorted_tasks = sorted(self.myTasks, key= self.func_to_use) 
-
-        return sorted_tasks
+        self.myTasks = sorted_tasks
         
     def updateTasks(self):
         return
@@ -62,12 +71,13 @@ class Schedule:
         
 if __name__ == "__main__":
 
-    t1=task("t1",60,datetime(2023,11,18,22,00),Priority.low,TaskType.school)
-    t2=task("t2",60,datetime(2023,11,18,22,00),Priority.very_high,TaskType.school)
-    t3=task("t3",60,datetime(2023,11,19,2,00),Priority.very_high,TaskType.school)
-    # t4=task(120,Priority.neutral,TaskType.school,datetime(2023,11,18,19,30))
+    t1=task("t1",60, datetime(2023,11,18, 22,00),Priority.low,TaskType.school)
+    t2=task("t2",60, datetime(2023,11,18, 22,00),Priority.very_high,TaskType.school)
+    t3=task("t3",60, datetime(2023,11,19, 2, 00),Priority.very_high,TaskType.school)
+    t4=task("t4",120,datetime(2023,11,20, 19,30),Priority.low, TaskType.school)
     # title,duration,deadline,priority,type,description
     print(t1.priority.value)
+
 
 
     mySchedule=Schedule([t1,t2,t3],[])
