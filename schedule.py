@@ -5,19 +5,15 @@ from enum import Enum
 
 ID=0
 
-
 def sort_by_priority_then_deadline(t):
     return (t.priority.value, - t.time_remaining_to_deadline())
     
 def sort_by_deadline_then_priority(t):
     return (- t.time_remaining_to_deadline(), t.priority.value)
 
-
-
 class Schedule:
 
-    def __init__(self,myTasks=[],myEvents=[],wakeup_time=None, sleep_time=None, prefered_function=sum_func_opt_both):
-    
+    def __init__(self,myTasks=[],myEvents=[],wakeup_time=None, sleep_time=None, prefered_function=sort_by_priority_then_deadline):
 
         self.myTasks=myTasks
         self.myEvents=myEvents
@@ -125,9 +121,9 @@ if __name__ == "__main__":
     breakfast=event(datetime(2023,11,19,9,30),datetime(2023,11,17,10,00),"MORE FOOD!","Breakfast",EventType.personal,EventRepetition.everyday)
     event1=[supper,workout,breakfast]
 
-    my_schedule=Schedule(task1,event1,time(7, 0, 0),time(23, 0, 0), sum_func_non_opt)
+    my_schedule=Schedule(task1,event1,time(7, 0, 0),time(23, 0, 0), sort_by_deadline_then_priority)
     
-    fs = [sum_func_non_opt, sum_func_opt_deadline, sum_func_opt_priotity]
+    fs = [sort_by_priority_then_deadline, sort_by_deadline_then_priority]
     for f in fs: 
         print('----------')
         my_schedule.sortTask()
