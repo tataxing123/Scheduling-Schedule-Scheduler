@@ -29,6 +29,7 @@ class event:
         self.type=type
         self.repetition=repetition
         
+        
     def updateStartEnd(self, start_year, start_month, start_day, start_hour, start_minute, end_year, end_month, end_day, end_hour, end_minute):
         self.start = datetime(start_year, start_month, start_day, start_hour, start_minute)
         self.end = datetime(end_year, end_month, end_day, end_hour, end_minute)
