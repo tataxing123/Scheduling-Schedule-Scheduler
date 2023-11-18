@@ -27,6 +27,8 @@ class task:
         self.title=title
         self.type=type
         self.deadline=deadline
+        self.completed=False 
+        self.scheduled=False
         
     def updateDuration(self,remainingDuration):
         
