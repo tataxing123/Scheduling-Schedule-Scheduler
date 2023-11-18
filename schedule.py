@@ -13,16 +13,17 @@ class SleepingHabits(Enum):
 
 product_func = lambda x: x.priority.value *  x.time_remaing_to_deadline()
 sum_func = lambda x, rate: x.priority.value + rate * x.time_remaing_to_deadline()
-
+#TODO add rate function 
 
 class Schedule:
     
-    def __init__(self,myTasks=[],myEvents=[],habits=SleepingHabits.both, funct_to_use=product_func):
+    def __init__(self,myTasks=[],myEvents=[],habits=SleepingHabits.both, funct_to_use=product_func, rate=1):
         
         self.myTasks=myTasks
         self.myEvents=myEvents
         self.habits=habits
         self.funct_to_use = funct_to_use
+        self.rate =rate
     
     def addTask(self,newTask):
         
