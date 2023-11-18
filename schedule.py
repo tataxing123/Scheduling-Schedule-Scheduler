@@ -2,7 +2,7 @@ from task import task
 from event import event
 from task import Priority
 from task import TaskType
-from datetime import datetime
+from datetime import datetime, time
 from enum import Enum
 
 class SleepingHabits(Enum):
@@ -11,10 +11,11 @@ class SleepingHabits(Enum):
     night = 2
     both = 3
 
-product_func = lambda x: x.priority.value *  x.time_remaing_to_deadline()
-sum_func_opt_deadline = lambda x: x.priority.value       + 0.5 * x.time_remaing_to_deadline()
-sum_func_opt_priotity = lambda x: 0.5 * x.priority.value + x.time_remaing_to_deadline()
-sum_func_non_opt =  lambda x: 0.5 * x.priority.value + x.time_remaing_to_deadline()
+product_func = lambda x: - x.priority.value *  x.time_remaining_to_deadline()
+sum_func_opt_deadline = lambda x: - x.priority.value       - 0.5 * x.time_remaining_to_deadline()
+sum_func_opt_priotity = lambda x: - 0.5 * x.priority.value - x.time_remaining_to_deadline()
+sum_func_non_opt =  lambda x: - x.priority.value - x.time_remaining_to_deadline()
+
 
 class Schedule:
 
@@ -28,12 +29,12 @@ class Schedule:
         self.sleep_time = sleep_time
         
         if wakeup_time is None:  
-            self.wakeup_time = datetime.time(8, 0, 0)
+            self.wakeup_time = time(8, 0, 0)
         else : 
             self.wakeup_time = wakeup_time
 
         if sleep_time is None:    
-            sleep_time = datetime.time(0, 0, 0)
+            self.sleep_time = time(0, 0, 0)
         else : 
             self.sleep_time = sleep_time
 
@@ -47,7 +48,7 @@ class Schedule:
         
     def sortTask(self):
         
-        sorted_tasks = sorted(self.myTasks, key= self.func_to_use) 
+        sorted_tasks = sorted(self.myTasks, key= self.prefered_function) 
         self.myTasks = sorted_tasks
     
     def update_preference(self, new_preference): 
@@ -77,8 +78,10 @@ if __name__ == "__main__":
     print(t1.priority.value)
 
 
-
-    mySchedule=Schedule([t1,t2,t3],[])
-    mySchedule.sortTask()
-    for something in mySchedule.myTasks:
-            print(something)
+    fs = [sum_func_non_opt, sum_func_opt_deadline, sum_func_opt_priotity]
+    for f in fs: 
+        print('--')
+        mySchedule=Schedule([t1,t2,t3,t4],[],prefered_function=f)
+        mySchedule.sortTask()
+        for something in mySchedule.myTasks:
+                print(something)
