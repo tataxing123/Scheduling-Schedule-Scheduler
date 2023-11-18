@@ -19,13 +19,13 @@ class TaskType(Enum):
  
 class task:
     
-    def __init__(self,duration,priority=Priority.low,description="",title="No Title",type=TaskType.other,deadline=datetime(2023,12,30,12,30)):
+    def __init__(self,title,duration,deadline,priority,task_type,description=""):
         
         self.duration=duration
         self.priority=priority
         self.description=description
         self.title=title
-        self.type=type
+        self.task_type=task_type
         self.deadline=deadline
         self.completed=False 
         self.scheduled=False
@@ -43,7 +43,7 @@ class task:
         
     def __str__(self) -> str:
         
-        return f'''{self.title} is a {self.type.name} task about {self.description}. Its gonna take {self.duration} min and has {self.priority.name} priority. It's due on {self.deadline}'''
+        return f'''{self.title} is a {self.task_type.name} task about {self.description}. Its gonna take {self.duration} min and has {self.priority.name} priority. It's due on {self.deadline}'''
         
         
 if __name__ == "__main__":

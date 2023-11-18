@@ -29,8 +29,10 @@ class Schedule:
         self.myEvent.append(newEvent)
         
     def sortTask(self):
-        remainder = (x.deadline-datetime.now()).hour*4
-        sorted_tasks = sorted(self.myTasks, key=lambda x: x.priority.value + remainder)
+        
+        sorted_tasks = sorted(self.myTasks, key=lambda x:
+            x.priority + (datetime.now()-x.deadline).total_seconds() / 900
+            )
 
         return sorted_tasks
         
@@ -43,11 +45,13 @@ class Schedule:
         
 if __name__ == "__main__":
     
-    t1=task(60,Priority.very_high,TaskType.school,datetime(2023,12,20,14,30))
-    t2=task(60,Priority.low,TaskType.school,datetime(2023,12,23,19,30))
-    t3=task(30,Priority.very_high,TaskType.school,datetime(2023,12,16,14,30))
-    t4=task(120,Priority.neutral,TaskType.school,datetime(2023,12,19,19,30))
+    t1=task("t1",60,datetime(2023,11,18,22,00),Priority.low,TaskType.school)
+    t2=task("t2",60,datetime(2023,11,18,22,00),Priority.very_high,TaskType.school)
+    t3=task("t3",60,datetime(2023,11,19,2,00),Priority.very_high,TaskType.school)
+    # t4=task(120,Priority.neutral,TaskType.school,datetime(2023,11,18,19,30))
+    # title,duration,deadline,priority,type,description
     
-    mySchedule=Schedule([t1,t2,t3,t3],[])
+    mySchedule=Schedule([t1,t2,t3],[])
     mySchedule.sortTask()
-    print(mySchedule)
+    for something in mySchedule.myTasks:
+            print(something)
