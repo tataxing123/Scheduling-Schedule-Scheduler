@@ -18,7 +18,8 @@ sum_func_non_opt =  lambda x: 0.5 * x.priority.value + x.time_remaing_to_deadlin
 
 class Schedule:
 
-    def __init__(self,myTasks=[],myEvents=[],wakeup_time=datetime.time(8, 0, 0) , sleep_time=datetime.time(0, 0, 0), prefered_function=product_func):
+    def __init__(self,myTasks=[],myEvents=[],wakeup_time=None, sleep_time=None, prefered_function=product_func):
+    
 
         self.myTasks=myTasks
         self.myEvents=myEvents
