@@ -5,21 +5,18 @@ from enum import Enum
 
 ID=0
 
-class SleepingHabits(Enum):
-   
-    morning = 1
-    night = 2
-    both = 3
 
-product_func = lambda x: x.priority.value *  x.time_remaining_to_deadline()
-sum_func_opt_deadline = lambda x: -(2*x.time_remaining_to_deadline()/x.priority.value)
-sum_func_opt_priotity = lambda x: -(0.5*x.time_remaining_to_deadline()/x.priority.value)
-sum_func_non_opt      = lambda x: -(x.time_remaining_to_deadline()/x.priority.value)
+def sort_by_priority_then_deadline(t):
+    return (t.priority.value, - t.time_remaining_to_deadline())
+    
+def sort_by_deadline_then_priority(t):
+    return (- t.time_remaining_to_deadline(), t.priority.value)
+
 
 
 class Schedule:
 
-    def __init__(self,myTasks=[],myEvents=[],wakeup_time=None, sleep_time=None, prefered_function=product_func):
+    def __init__(self,myTasks=[],myEvents=[],wakeup_time=None, sleep_time=None, prefered_function=sum_func_opt_both):
     
 
         self.myTasks=myTasks
@@ -28,6 +25,7 @@ class Schedule:
         self.wakeup_time = wakeup_time
         self.sleep_time = sleep_time
         
+
         if wakeup_time is None:  
             self.wakeup_time = time(8, 0, 0)
         else : 
@@ -52,8 +50,7 @@ class Schedule:
         
     def sortTask(self):
         
-        sorted_tasks = sorted(self.myTasks, key=self.prefered_function) 
-        self.myTasks = sorted_tasks
+        self.myTasks = sorted(self.myTasks, key=self.prefered_function) 
     
     def update_preference(self, new_preference): 
 
