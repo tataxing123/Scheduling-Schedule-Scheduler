@@ -39,7 +39,7 @@ class task:
         self.priority=Priority(self.priority.value+1)
 
     def time_remaining_to_deadline(self): 
-        return (datetime.now()-self.deadline).total_seconds() / 900
+        return (self.deadline-datetime.now()).total_seconds() / 900
         
     def __str__(self) -> str:
         
