@@ -5,16 +5,11 @@ from task import TaskType
 from datetime import datetime, time
 from enum import Enum
 
-class SleepingHabits(Enum):
-   
-    morning = 1
-    night = 2
-    both = 3
 
 product_func = lambda x: x.priority.value *  x.time_remaining_to_deadline()
 sum_func_opt_deadline = lambda x: -(2*x.time_remaining_to_deadline()/x.priority.value)
 sum_func_opt_priotity = lambda x: -(0.5*x.time_remaining_to_deadline()/x.priority.value)
-sum_func_non_opt      = lambda x: -(x.time_remaining_to_deadline()/x.priority.value)
+sum_func_opt_both     = lambda x: -(x.time_remaining_to_deadline()/x.priority.value)
 
 
 class Schedule:
@@ -81,12 +76,16 @@ if __name__ == "__main__":
     t7=task("t3",60, datetime(2023,11,19, 2, 00),Priority.low,TaskType.school)
     t8=task("t4",120,datetime(2023,11,20, 19,30),Priority.low, TaskType.school)
     
+    print("t1")
     print(t1.time_remaining_to_deadline())
     print(t1.time_remaining_to_deadline()/t1.priority.value)
+    print("t2")
     print(t2.time_remaining_to_deadline())
     print(t2.time_remaining_to_deadline()/t2.priority.value)
+    print("t3")
     print(t3.time_remaining_to_deadline())
     print(t3.time_remaining_to_deadline()/t3.priority.value)
+    print("t4")
     print(t4.time_remaining_to_deadline())
     print(t4.time_remaining_to_deadline()/t4.priority.value)
     
