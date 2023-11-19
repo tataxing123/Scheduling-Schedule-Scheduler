@@ -3,6 +3,7 @@ from task import *
 from datetime import datetime, time,timedelta
 from enum import Enum
 from collections import deque
+import pandas as pd
 
 ID=0
 
@@ -189,7 +190,7 @@ class Schedule:
                 i=0
                 while (len(sorted_tasks)!=0):
                     this_task = sorted_tasks.pop(0)
-                    print(this_task)
+                    #print(this_task)
                     # available_duration is in delta
                     available_duration = abs(datetime.combine(curr_time.date(), self.sleep_time)-curr_time)
                     
@@ -272,10 +273,10 @@ if __name__ == "__main__":
     buy_bd_gift=task("Buy B-Day Gift",60, datetime(2023,11,19,15,00),Priority.neutral,TaskType.personal)
     task1=[greedy_sort,convert_to_js,send_email,buy_bd_gift]
     
-    supper=event(datetime(2023,11,19,19,00),datetime(2023,11,19,20,00),"FOOD!","Supper",EventType.personal,EventRepetition.everyday)
-    workout=event(datetime(2023,11,19,22,00),datetime(2023,11,19,22,30),"GRIND :)!","Workout",EventType.personal,EventRepetition.weekly)
-    breakfast=event(datetime(2023,11,20,9,30),datetime(2023,11,20,10,00),"MORE FOOD!","Breakfast",EventType.personal,EventRepetition.everyday)
-    event1=[supper,breakfast,workout]
+    #supper=event(datetime(2023,11,29,19,00),datetime(2023,11,29,20,00),"FOOD!","Supper",EventType.personal,EventRepetition.everyday)
+    #workout=event(datetime(2023,11,29,22,00),datetime(2023,11,29,22,30),"GRIND :)!","Workout",EventType.personal,EventRepetition.weekly)
+    #breakfast=event(datetime(2023,11,30,9,30),datetime(2023,11,30,10,00),"MORE FOOD!","Breakfast",EventType.personal,EventRepetition.everyday)
+    event1=[]
     
     curr_time=datetime(2023,11,19,18,30)
     
@@ -286,6 +287,24 @@ if __name__ == "__main__":
     #   print(this)
     this =  my_schedule.greedy_sort()
     
+
+
+    d = []
+    # Convert the list of tuples to a DataFrame
+    for t in this: 
+        d.append((t.deadline, t.priority,t.duration, t.start_time, t.end_time))
+    # Create a DataFrame from the list of dictionaries
+    df = pd.DataFrame(d, columns=['deadline', 'priority','duration', 'start_time', 'end_time'])
+
+    pd.set_option('display.width', 9000)
+    pd.set_option('display.max_colwidth', None)  # Display full column width
+
+
+    # Display the DataFrame
+    print(df)
+
+    
+
     
     
         
