@@ -43,9 +43,26 @@ class Schedule:
         ID+=1
         self.myEvents.append(new_event)
         
+    def get_first_upcomming_event(self,curr_time):
+        
+        
+    def split(self,this_task,duration):
+        
+        new_task = None
+        old_task=task(this_task.title,duration,this_task.deadline,this_task.priority,this_task.task_type,this_task.description)
+        
+        if this_task.duration!=duration:
+            new_task=task(this_task.title,(this_task.duration-duration),this_task.deadline,this_task.priority,this_task.task_type,this_task.description)
+        
+        return old_task,new_task
+        
     def sortTask(self):
         
         self.myTasks = sorted(self.myTasks, key=self.prefered_function) 
+        
+    def sortEvent(self):
+        
+        self.myEvents = sorted(self.myEvents, key=lambda event: event.start)
     
     def update_preference(self, new_preference): 
 
@@ -54,7 +71,58 @@ class Schedule:
     def update_sleep_time(self, sleep_time): 
 
         self.sleep_time = sleep_time
-    
+        
+    def better_greedy_sort(self): 
+        
+        self.sortTask()
+        sorted_tasks=self.myTasks.copy()
+        
+        self.sortEvent()  # TODO 
+        schedule = []
+        
+        cur_t = datetime.now()
+
+        while (len(sorted_tasks)!=0):
+            first_upcomming_event = self.get_first_upcomming_event() # TODO 
+            available_duration = first_upcomming_event - cur_t
+            breaked = False
+            # if one of top 3 's deadline is within available duration 
+            for i in range(3): 
+                if sorted_tasks[i].deadline < first_upcomming_event :
+                    picked_task = sorted_tasks[i]
+                    old, new = self.split(picked_task, available_duration) # TODO 
+                    schedule.append(old)
+                    if new is None : self.notify_task_incompete() #TODO
+                    cur_t += old.duration
+                    cur_t = self.jump_to_valide(cur_t)
+                    sorted_tasks.pop(i)
+                    breaked = True
+                    break
+            if breaked : continue 
+
+            # else if one of top 3 fits properly 
+            for i in range(3): 
+                if sorted_tasks[i].duration <= available_duration: 
+                    picked_task = sorted_tasks[i]
+                    sorted_tasks.pop(i)
+                    schedule.append(picked_task)
+                    cur_t += picked_task.duration
+                    cur_t = self.jump_to_valide(cur_t)
+                    break
+            if breaked : continue 
+
+            # else pick first priority 
+            picked_task = sorted_tasks[0]
+            old, new = self.split(picked_task, available_duration) 
+            cur_t += old.duration
+            cur_t = self.jump_to_valide(cur_t)
+            if new is not None : sorted_tasks[0] = new 
+            else : sorted_tasks.pop(0)
+            schedule.append(old)
+
+        # end of while 
+        return schedule
+        
     def update_wakeup_time(self, wakeup_time): 
 
         self.wakeup_time = wakeup_time
@@ -132,7 +200,7 @@ class Schedule:
                     sorted_tasks = sorted(sorted_tasks, key=lambda x: (x.priority, x.deadline), reverse=True)
                     
                 else:
-                    # Schedule the entire task
+                    # Schedule the entire tasks
                     schedule.append((current_time, current_time + task.duration))
                     current_time += task.duration
                     
@@ -155,15 +223,19 @@ if __name__ == "__main__":
     supper=event(datetime(2023,11,18,19,00),datetime(2023,11,18,20,00),"FOOD!","Supper",EventType.personal,EventRepetition.everyday)
     workout=event(datetime(2023,11,18,22,00),datetime(2023,11,18,22,30),"GRIND :)!","Workout",EventType.personal,EventRepetition.weekly)
     breakfast=event(datetime(2023,11,19,9,30),datetime(2023,11,19,10,00),"MORE FOOD!","Breakfast",EventType.personal,EventRepetition.everyday)
-    event1=[supper,workout,breakfast]
-
+    event1=[supper,breakfast,workout]
+    
 
     print(datetime.now() + timedelta(hours=3) <= datetime(2023,11,19, 12,00))
         
         
     my_schedule=Schedule(task1,event1,time(7, 0, 0),time(23, 0, 0), sort_by_deadline_then_priority)
+    my_schedule.sortEvent()
     my_schedule.sortTask()
-    designed_schedule=my_schedule.greedy_sort()
+    for this_event in my_schedule.myEvents:
+        print(this_event)
+        
+    #designed_schedule=my_schedule.greedy_sort()
 
 
     
