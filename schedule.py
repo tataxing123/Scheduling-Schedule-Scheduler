@@ -20,7 +20,6 @@ class Schedule:
         self.prefered_function = prefered_function
         self.wakeup_time = wakeup_time
         self.sleep_time = sleep_time
-        
 
         if wakeup_time is None:  
             self.wakeup_time = time(8, 0, 0)
@@ -63,26 +62,30 @@ class Schedule:
     def greedy_sort(self):
         
         self.sortTask()
-        
         # Sort tasks by descending priority and then by ascending deadline
         sorted_tasks = self.myTasks.copy()
         schedule = []
-        current_time = datetime.now()
         
         while(len(sorted_tasks)!=0):
             
+            current_time = datetime.now()
             task=sorted_tasks.pop()
+            print(type(timedelta(minutes=task.duration)))
+            duration_in_datetime=timedelta(minutes=task.duration)
+            sleep_time_in_datetime=datetime.combine(current_time, self.sleep_time)
+            
             # Check if the task can be scheduled before its deadline
-            if current_time + timedelta(minutes=task.duration) <= task.deadline:
+            if current_time + duration_in_datetime <= task.deadline:
                 
                 # Check for overlapping events and sleep time
-                while any(event.start <= current_time < event.end for event in self.myEvents) or (current_time + timedelta(minutes=task.duration)) > self.sleep_time:
+                while any(event.start <= current_time < event.end for event in self.myEvents) or (current_time + duration_in_datetime) > sleep_time_in_datetime:
                     
                     # Move the current time to the end of the conflicting event or sleep time
-                    current_time = min(event.end for event in self.myEvents if event.start <= current_time < event.end) if any(event.start <= current_time < event.end for event in self.myEvents) else self.sleep_time
+                    current_time = min(event.end for event in self.myEvents if event.start <= current_time < event.end) if any(event.start <= current_time < event.end for event in self.myEvents) 
+                    else self.sleep_time
 
                 # Check if the task needs to be split
-                if task.duration > (self.sleep_time - current_time):
+                if task.duration > (sleep_time_in_datetime - current_time):
                     
                     # Calculate the remaining duration for the second part of the task
                     remaining_duration = task.duration - (self.sleep_time - current_time)
@@ -98,6 +101,7 @@ class Schedule:
 
                     # Sort the tasks again after adding the new task
                     sorted_tasks = sorted(sorted_tasks, key=lambda x: (x.priority, x.deadline), reverse=True)
+                    
                 else:
                     # Schedule the entire task
                     schedule.append((current_time, current_time + task.duration))
