@@ -71,9 +71,7 @@ class Schedule:
     def update_sleep_time(self, sleep_time): 
 
         self.sleep_time = sleep_time
-        
     def better_greedy_sort(self): 
-        
         self.sortTask()
         sorted_tasks=self.myTasks.copy()
         
@@ -123,6 +121,10 @@ class Schedule:
         # end of while 
         return schedule
         
+
+                    
+
+    
     def update_wakeup_time(self, wakeup_time): 
 
         self.wakeup_time = wakeup_time
