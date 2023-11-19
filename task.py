@@ -28,11 +28,13 @@ class task:
         self.title=title
         self.task_type=task_type
         self.deadline=deadline
-        self.completed=False 
-        self.scheduled=False
         self.start_time=None
         self.end_time=None
         self.ID=0
+        
+    def updateStart_End_Time(self,start,end):
+        self.start_time=start
+        self.end_time=end
         
     def updateDuration(self,remainingDuration):
         
@@ -47,7 +49,7 @@ class task:
         
     def __str__(self) -> str:
         
-        return f'''{self.title} is a {self.task_type.name} task about {self.description}. Its gonna take {self.duration} min and has {self.priority.name} priority. It's due on {self.deadline}'''
+        return f'''{self.title} is a {self.task_type.name} task about {self.description}. Its gonna take {self.duration} min and has {self.priority.name} priority. It's due on {self.deadline} and done task at {self.start_time}'''
         
         
 if __name__ == "__main__":
