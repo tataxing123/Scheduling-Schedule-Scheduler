@@ -54,6 +54,25 @@ class Schedule:
     def update_sleep_time(self, sleep_time): 
 
         self.sleep_time = sleep_time
+    def better_greedy_sort(self): 
+        self.sortTask()
+        sorted_tasks=self.myTasks.copy()
+        
+        self.sortEvent()  # TODO 
+        schedule = []
+        
+        cur_t = datetime.now()
+
+        while (len(sorted_tasks)!=0):
+            first_upcomming_event = get_first_upcomming_event() # TODO 
+            available_duration = first_upcomming_event - cur_t
+            for i in range(3): 
+                if sorted_tasks[i].deadline < first_upcomming_event :
+                    picked_task = sorted_tasks[i]
+                    old, new = split(picked_task, available_duration)
+                    schedule.append(old)
+                    if new.duration > 0 : task_incompete() #TODO
+
     
     def update_wakeup_time(self, wakeup_time): 
 
