@@ -64,14 +64,48 @@ class Schedule:
         cur_t = datetime.now()
 
         while (len(sorted_tasks)!=0):
-            first_upcomming_event = get_first_upcomming_event() # TODO 
+            first_upcomming_event = self.get_first_upcomming_event() # TODO 
             available_duration = first_upcomming_event - cur_t
+            breaked = False
+            # if one of top 3 's deadline is within available duration 
             for i in range(3): 
                 if sorted_tasks[i].deadline < first_upcomming_event :
                     picked_task = sorted_tasks[i]
-                    old, new = split(picked_task, available_duration)
+                    old, new = self.split(picked_task, available_duration) # TODO 
                     schedule.append(old)
-                    if new.duration > 0 : task_incompete() #TODO
+                    if new is None : self.notify_task_incompete() #TODO
+                    cur_t += old.duration
+                    cur_t = self.jump_to_valide(cur_t)
+                    sorted_tasks.pop(i)
+                    breaked = True
+                    break
+            if breaked : continue 
+
+            # else if one of top 3 fits properly 
+            for i in range(3): 
+                if sorted_tasks[i].duration <= available_duration: 
+                    picked_task = sorted_tasks[i]
+                    sorted_tasks.pop(i)
+                    schedule.append(picked_task)
+                    cur_t += picked_task.duration
+                    cur_t = self.jump_to_valide(cur_t)
+                    break
+            if breaked : continue 
+
+            # else pick first priority 
+            picked_task = sorted_tasks[0]
+            old, new = self.split(picked_task, available_duration) 
+            cur_t += old.duration
+            cur_t = self.jump_to_valide(cur_t)
+            if new is not None : sorted_tasks[0] = new 
+            else : sorted_tasks.pop(0)
+            schedule.append(old)
+
+        # end of while 
+        return schedule
+        
+
+                    
 
     
     def update_wakeup_time(self, wakeup_time): 
