@@ -62,24 +62,28 @@ class Schedule:
         
     def greedy_sort(self):
         
+        self.sortTask()
+        
         # Sort tasks by descending priority and then by ascending deadline
-        sorted_tasks = self.myTasks
+        sorted_tasks = self.myTasks.copy()
         schedule = []
         current_time = datetime.now()
-
-        for task in self.myTasks:
+        
+        while(len(sorted_tasks)!=0):
             
+            task=sorted_tasks.pop()
             # Check if the task can be scheduled before its deadline
-            if current_time + timedelta(hours=task.duration) <= task.deadline:
+            if current_time + timedelta(minutes=task.duration) <= task.deadline:
                 
                 # Check for overlapping events and sleep time
-                while any(event.start_time <= current_time < event.end_time for event in self.myEvents) or (current_time + timedelta(hours=task.duration)) > self.sleep_time:
+                while any(event.start <= current_time < event.end for event in self.myEvents) or (current_time + timedelta(minutes=task.duration)) > self.sleep_time:
                     
                     # Move the current time to the end of the conflicting event or sleep time
-                    current_time = min(event.end_time for event in self.myEvents if event.start_time <= current_time < event.end_time) if any(event.start_time <= current_time < event.end_time for event in self.myEvents) else self.sleep_time
+                    current_time = min(event.end for event in self.myEvents if event.start <= current_time < event.end) if any(event.start <= current_time < event.end for event in self.myEvents) else self.sleep_time
 
                 # Check if the task needs to be split
                 if task.duration > (self.sleep_time - current_time):
+                    
                     # Calculate the remaining duration for the second part of the task
                     remaining_duration = task.duration - (self.sleep_time - current_time)
 
@@ -113,7 +117,6 @@ if __name__ == "__main__":
     convert_to_js=task("Covert Code to JS",60, datetime(2023,11,19, 12,00),Priority.high,TaskType.school)
     send_email=task("Send email",15, datetime(2023,11,18,22,00),Priority.low,TaskType.school,"send an email to the guidance counselor about course selection")
     buy_bd_gift=task("Buy B-Day Gift",60, datetime(2023,11,19,15,00),Priority.neutral,TaskType.personal)
-    
     task1=[greedy_sort,convert_to_js,send_email,buy_bd_gift]
     
     supper=event(datetime(2023,11,18,19,00),datetime(2023,11,18,20,00),"FOOD!","Supper",EventType.personal,EventRepetition.everyday)
@@ -121,15 +124,22 @@ if __name__ == "__main__":
     breakfast=event(datetime(2023,11,19,9,30),datetime(2023,11,17,10,00),"MORE FOOD!","Breakfast",EventType.personal,EventRepetition.everyday)
     event1=[supper,workout,breakfast]
 
+
+    print(datetime.now() + timedelta(hours=3) <= datetime(2023,11,19, 12,00))
+        
+        
     my_schedule=Schedule(task1,event1,time(7, 0, 0),time(23, 0, 0), sort_by_deadline_then_priority)
-    
-    fs = [sort_by_priority_then_deadline, sort_by_deadline_then_priority]
-    for f in fs: 
-        print('----------')
-        my_schedule.sortTask()
-        designed_schedule=my_schedule.greedy_sort()
-        for my_life in designed_schedule:
-            print(my_life)
+    my_schedule.sortTask()
+    designed_schedule=my_schedule.greedy_sort()
+    print(designed_schedule)
+            
+    # fs = [sort_by_priority_then_deadline, sort_by_deadline_then_priority]
+    # for f in fs: 
+    #     print('----------')
+    #     my_schedule.sortTask()
+    #     designed_schedule=my_schedule.greedy_sort()
+    #     for my_life in designed_schedule:
+    #         print(my_life)
                 
 
     
